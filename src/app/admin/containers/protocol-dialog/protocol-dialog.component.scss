@@ -1,0 +1,97 @@
+@use '@material/dialog/dialog-theme' as mdc-dialog-theme;
+@use '@material/theme/theme-color' as mdc-theme-color;
+
+.mat-mdc-dialog-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 16px;
+}
+
+.mat-mdc-dialog-content {
+  $on-surface: mdc-theme-color.$on-surface;
+  $text-emphasis-high: mdc-theme-color.text-emphasis(high);
+
+  @include mdc-dialog-theme.theme((
+          supporting-text-color: rgba($on-surface, $text-emphasis-high),
+          supporting-text-size: 14px,
+  ));
+}
+
+mat-dialog-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.message-for-user-label {
+  margin: 0;
+}
+
+.message-for-user-container {
+  display: flex;
+  margin-bottom: 8px;
+  .message-for-user {
+    flex-grow: 1;
+    border: 1px solid rgba(0,0,0,0.7);
+    border-radius: 5px;
+    padding: 8px;
+    overflow-wrap: anywhere;
+    margin: 0;
+    white-space: pre-wrap
+  }
+}
+
+dl.desc {
+  border: 1px solid #eee;
+  display: flex;
+  flex-wrap: wrap;
+
+  dt,
+  dd {
+    box-sizing: border-box;
+    padding: 10px;
+  }
+  dd ~ dt,
+  dd ~ dd {
+    border-top: 1px solid #eee;
+  }
+  dt {
+    width: 35%;
+  }
+  dt:nth-of-type(even){
+    background-color: #fafafa;
+  }
+  dd {
+    margin: 0;
+    width: 65%;
+    border-left: 1px #eee;
+  }
+  dd:nth-of-type(even) {
+    background-color: #fafafa;
+  }
+}
+
+.date-errors{
+  span:not(:last-of-type) {
+    &:after{
+      content: '|';
+      margin: 0 4px;
+    }
+  }
+}
+
+
+@media only screen and (max-width: 700px) {
+  .mat-mdc-dialog-title {
+    padding-top: 4px !important;
+    font-size: 18px !important;
+  }
+
+  .mat-mdc-dialog-title button {
+    height: 36px;
+    width: 36px;
+    padding: 6px;
+  }
+}

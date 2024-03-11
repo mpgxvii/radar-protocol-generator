@@ -1,0 +1,32 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <div class="logo-wrapper">
+      <img class="logo" src="assets/images/radar-logo.svg" alt="RADAR-base Logo" />
+    </div>
+
+    <span class="title uppercase">Protocol Generator</span>
+
+    <span class="spacer"></span>
+
+    <button mat-button
+            class="language-button"
+            [matMenuTriggerFor]="languageMenu"
+            aria-label="Language button with a menu"
+    >
+      <mat-icon>language</mat-icon>
+      <span class="uppercase icon-label">{{currentLanguage}}</span>
+      <mat-icon>arrow_drop_down</mat-icon>
+    </button>
+
+    <mat-menu #languageMenu="matMenu">
+      <button *ngFor="let language of languages"
+              class="language-item"
+              mat-menu-item
+              (click)="switchLanguage(language.lang)"
+      >
+        <span class="uppercase">{{ language.label }}</span>
+      </button>
+    </mat-menu>
+
+  </mat-toolbar-row>
+</mat-toolbar>

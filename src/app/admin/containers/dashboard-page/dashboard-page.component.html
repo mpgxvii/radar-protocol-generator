@@ -1,0 +1,352 @@
+<div class="container">
+  <span class="small-text">This is a protocol generator that would generate the questionnaire protocol. See: https://github.com/RADAR-base/RADAR-aRMT-protocols</span>
+  <!-- <mat-card appearance="outlined"> -->
+    <!-- <mat-card-content> -->
+      <br><br><br>
+      <form (ngSubmit)="onSubmit()">
+        <div class="">
+        <mat-form-field appearance="outline" floatLabel="always">
+          <mat-label for="version">Version:</mat-label>
+          <input
+            matInput
+            type="text"
+            id="version"
+            [(ngModel)]="formData.version"
+            name="version"
+            required
+          />
+        </mat-form-field>
+       
+        <mat-form-field appearance="outline" floatLabel="always">
+          <mat-label for="schemaVersion">Schema Version:</mat-label>
+          <input
+            matInput
+            type="text"
+            id="schemaVersion"
+            [(ngModel)]="formData.schemaVersion"
+            name="schemaVersion"
+            required
+          />
+        </mat-form-field>
+
+          <mat-form-field appearance="outline" floatLabel="always">
+          <mat-label for="name">Name:</mat-label>
+          <input
+            matInput
+            type="text"
+            id="name"
+            [(ngModel)]="formData.name"
+            name="name"
+            required
+            >
+          </mat-form-field>
+
+
+        <mat-form-field appearance="outline" floatLabel="always">
+          <mat-label for="healthIssues">Health Issues:</mat-label>
+          <input
+            matInput
+            type="text"
+            id="healthIssues"
+            [(ngModel)]="formData.healthIssues"
+            name="healthIssues"
+            required
+          />
+        </mat-form-field>
+        
+      </div>
+      <div class="buttons">
+          <button mat-raised-button color="primary" type="button" (click)="addProtocol()">Add Protocol</button>
+  
+          <button mat-raised-button color="primary" type="submit">Submit</button>
+        </div>
+
+        <div
+          *ngFor="let protocol of formData.protocols; let i = index"
+          class="protocol-section"
+        >
+        <mat-card appearance="outlined" class="protocol">
+          <mat-card-content>
+            <div mat-dialog-title>
+              <h3>Protocol {{ i + 1 }}</h3>
+            </div>
+
+          <mat-form-field appearance="outline" floatLabel="always">
+          <mat-label for="protocolName">Protocol Name:</mat-label>
+          <input
+            matInput
+            type="text"
+            id="protocolName"
+            [(ngModel)]="protocol.name"
+            name="protocolName"
+            required
+            >
+          </mat-form-field>
+
+        <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label for="order">Order:</mat-label>
+            <input
+              matInput
+              type="number"
+              id="order"
+              [(ngModel)]="protocol.order"
+              name="order"
+              required
+              />
+              </mat-form-field>
+              <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label for="estimatedCompletionTime">Estimated Completion Time (min):</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  id="estimatedCompletionTime"
+                  [(ngModel)]="protocol.estimatedCompletionTime"
+                  name="estimatedCompletionTime"
+                  required
+                  />
+                  </mat-form-field>
+                  <br>
+
+                  <mat-checkbox id="showIntroduction"
+                  [(ngModel)]="protocol.showIntroduction"
+                  name="showIntroduction">Show Introduction:</mat-checkbox>
+                  
+                  <mat-checkbox id="showInCalendar"
+                  [(ngModel)]="protocol.showInCalendar">Show In Calendar:
+                </mat-checkbox>
+        
+                <mat-checkbox id="isDemo" [(ngModel)]="protocol.isDemo" name="isDemo">Is Demo:</mat-checkbox>
+        
+          <!-- RepeatProtocol Section -->
+          <div class="repeat-protocol-section">
+            <h4>Repeat Protocol</h4>
+            <mat-form-field appearance="outline" floatLabel="always">
+              <mat-label for="repeatProtocolUnit">Unit:</mat-label>
+              <mat-select
+                id="repeatProtocolUnit"
+                [(ngModel)]="protocol.protocol.repeatProtocol.unit"
+                name="repeatProtocolUnit"
+                required
+                >
+              <mat-option value="min">Minutes</mat-option>
+              <mat-option value="hour">Hours</mat-option>
+              <mat-option value="day">Days</mat-option>
+              <mat-option value="week">Weeks</mat-option>
+              <mat-option value="month">Months</mat-option>
+              <mat-option value="year">Years</mat-option>
+              </mat-select>
+            </mat-form-field>
+           
+            <mat-form-field appearance="outline" floatLabel="always">
+              <mat-label for="repeatProtocolAmount">Amount:</mat-label>
+              <input
+                matInput
+                type="number"
+                id="repeatProtocolAmount"
+                [(ngModel)]="protocol.protocol.repeatProtocol.amount"
+                name="repeatProtocolAmount"
+                required
+              />
+              </mat-form-field>
+          </div>
+
+          <!-- RepeatQuestionnaire Section -->
+          <div class="repeat-questionnaire-section">
+            <h4>Repeat Questionnaire</h4>
+
+            <mat-form-field appearance="outline" floatLabel="always">
+              <mat-label for="repeatQuestionnaireUnit">Unit:</mat-label>
+              <mat-select
+                id="repeatQuestionnaireUnit"
+                [(ngModel)]="protocol.protocol.repeatQuestionnaire.unit"
+                name="repeatQuestionnaireUnit"
+                required
+                >
+              <mat-option value="min">Minutes</mat-option>
+              <mat-option value="hour">Hours</mat-option>
+              <mat-option value="day">Days</mat-option>
+              <mat-option value="week">Weeks</mat-option>
+              <mat-option value="month">Months</mat-option>
+              <mat-option value="year">Years</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" floatLabel="always">
+              <mat-label for="repeatQuestionnaireUnitsFromZero">Units From Midnight:</mat-label>
+              <input
+                matInput
+                type="number"
+                id="repeatQuestionnaireUnitsFromZero"
+                [(ngModel)]="protocol.protocol.repeatQuestionnaire.unitsFromZero"
+                name="repeatQuestionnaireUnitsFromZero"
+                required
+              />
+              </mat-form-field>
+          </div>
+
+      
+
+          <!-- Reminders Section -->
+          <div class="reminders-section">
+            <h4>Reminders</h4>
+            <mat-form-field appearance="outline" floatLabel="always">
+              <mat-label for="reminderUnit">Unit:</mat-label>
+              <mat-select
+                id="reminderUnit"
+                [(ngModel)]="protocol.protocol.reminders.unit"
+                name="reminderUnit"
+                required
+                >
+              <mat-option value="min">Minutes</mat-option>
+              <mat-option value="hour">Hours</mat-option>
+              <mat-option value="day">Days</mat-option>
+              <mat-option value="week">Weeks</mat-option>
+              <mat-option value="month">Months</mat-option>
+              <mat-option value="year">Years</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label for="reminderAmount">Amount:</mat-label>
+            <input
+              matInput
+              type="number"
+              id="reminderAmount"
+              [(ngModel)]="protocol.protocol.reminders.amount"
+              name="reminderAmount"
+              required
+            />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label for="reminderRepeat">Repeat:</mat-label>
+            <input
+              matInput
+              type="number"
+              id="reminderRepeat"
+              [(ngModel)]="protocol.protocol.reminders.repeat"
+              name="reminderRepeat"
+              required
+            />
+            </mat-form-field>
+          </div>
+
+          <!-- CompletionWindow Section -->
+          <div class="completion-window-section">
+            <h4>Completion Window</h4>
+
+            <mat-form-field appearance="outline" floatLabel="always">
+              <mat-label for="completionWindowUnit">Unit:</mat-label>
+              <mat-select
+                id="completionWindowUnit"
+                [(ngModel)]="protocol.protocol.completionWindow.unit"
+                name="completionWindowUnit"
+                required
+                >
+              <mat-option value="min">Minutes</mat-option>
+              <mat-option value="hour">Hours</mat-option>
+              <mat-option value="day">Days</mat-option>
+              <mat-option value="week">Weeks</mat-option>
+              <mat-option value="month">Months</mat-option>
+              <mat-option value="year">Years</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label for="completionWindowAmount">Amount:</mat-label>
+            <input
+              matInput
+              type="number"
+              id="completionWindowAmount"
+              [(ngModel)]="protocol.protocol.completionWindow.amount"
+              name="completionWindowAmount"
+              required
+            />
+            </mat-form-field>
+          </div>
+
+          <!-- Notification Section -->
+          <div class="notification-section">
+            <h4>Notification</h4>
+
+            <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label for="notificationTitleEn">Title (English):</mat-label>
+            <input
+              matInput
+              type="text"
+              id="notificationTitleEn"
+              [(ngModel)]="protocol.protocol.notification.title.en"
+              name="notificationTitleEn"
+              required
+            />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label for="notificationTextEn">Text (English):</mat-label>
+            <input
+              matInput
+              type="text"
+              id="notificationTextEn"
+              [(ngModel)]="protocol.protocol.notification.text.en"
+              name="notificationTextEn"
+              required
+            />
+            </mat-form-field>
+
+            <!-- Add similar fields for other languages -->
+          </div>
+
+          <!-- Add other protocol sections here -->
+
+          <div class="questionnaire-section">
+            <h4>Questionnaire</h4>
+
+            <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label for="questionnaireRepository">Repository:</mat-label>
+            <input
+              matInput
+              type="text"
+              id="questionnaireRepository"
+              [(ngModel)]="protocol.questionnaire.repository"
+              name="questionnaireRepository"
+              required
+            />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label for="questionnaireName">Name:</mat-label>
+            <input
+              matInput
+              type="text"
+              id="questionnaireName"
+              [(ngModel)]="protocol.questionnaire.name"
+              name="questionnaireName"
+              required
+            />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" floatLabel="always">
+              <mat-label for="questionnaireAvsc">Avsc:</mat-label>
+              <input
+                matInput
+                type="text"
+                id="questionnaireAvsc"
+                [(ngModel)]="protocol.questionnaire.avsc"
+                name="questionnaireAvsc"
+                required
+              />
+            </mat-form-field>
+
+          </div>
+
+          <!-- Add other protocol sections here -->
+          <button mat-raised-button color="warn" type="button" (click)="removeProtocol(i)">Remove Protocol</button>
+        </mat-card-content>
+        </mat-card>
+        </div>
+
+       
+      </form>
+    <!-- </mat-card-content> -->
+  <!-- </mat-card> -->
+</div>

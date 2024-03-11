@@ -1,0 +1,51 @@
+{
+  "name": "authorizer-app",
+  "version": "4.4.1",
+  "description": "Simple app to authorize to collect data from third party services ",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RADAR-base/RADAR-Rest-Source-Auth.git"
+  },
+  "author": "Nivethika Mahasivam <nivethika@thehyve.nl>, Peyman Mohtashami <peyman@thehyve.nl>",
+  "license": "Apache 2.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve --port 8080",
+    "build": "ng build --output-path=./dist",
+    "postbuild": "gzipper compress -e ico,png --gzip dist",
+    "watch": "ng build --watch --configuration development",
+    "lint": "ng lint"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^15.0.4",
+    "@angular/cdk": "^15.0.3",
+    "@angular/common": "^15.0.4",
+    "@angular/compiler": "^15.0.4",
+    "@angular/core": "^15.0.4",
+    "@angular/forms": "^15.0.4",
+    "@angular/material": "^15.0.3",
+    "@angular/material-moment-adapter": "^15.0.3",
+    "@angular/platform-browser": "^15.0.4",
+    "@angular/platform-browser-dynamic": "^15.0.4",
+    "@angular/router": "^15.0.4",
+    "@auth0/angular-jwt": "~5.1.1",
+    "@biesbjerg/ngx-translate-extract": "^7.0.4",
+    "@larscom/ngx-translate-module-loader": "^3.0.6",
+    "@ngx-translate/core": "^14.0.0",
+    "@ngx-translate/http-loader": "^7.0.0",
+    "moment": "^2.29.1",
+    "rxjs": "^7.8.0",
+    "tslib": "^2.4.1",
+    "zone.js": "~0.12.0"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "15.0.4",
+    "@angular/cli": "^15.0.4",
+    "@angular/compiler-cli": "^15.0.4",
+    "@angular/language-service": "^15.0.4",
+    "@types/node": "~18.11.17",
+    "gzipper": "^7.1.0",
+    "typescript": "~4.8.2"
+  }
+}

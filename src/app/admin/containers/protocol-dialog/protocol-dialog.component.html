@@ -1,0 +1,39 @@
+<div mat-dialog-title>
+  <span >
+    Protocol JSON file
+  </span>
+
+  <button mat-icon-button
+          class="close-button"
+          [mat-dialog-close]="true"
+          (click)="close()"
+  >
+    <mat-icon class="close-icon">close</mat-icon>
+  </button>
+</div>
+
+<mat-dialog-content>
+  <app-message *ngIf="error">
+    {{error | translate}}
+  </app-message>
+
+  <dl class="desc">
+    <dd>{{ subject | json }}</dd>
+
+  </dl>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <div class="action-buttons-container__left">
+    <button mat-stroked-button
+            color="primary"
+            type="button"
+            class="close-button"
+            [mat-dialog-close]="true"
+            (click)="close()"
+    >
+      Cancel
+    </button>
+  </div>
+</mat-dialog-actions>
