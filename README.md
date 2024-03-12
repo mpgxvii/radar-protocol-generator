@@ -9,3 +9,5 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app w
 ## Screenshots
 
 ![localhost_53620_(iPad Pro)](https://github.com/mpgxvii/radar-protocol-generator/assets/16977973/bdd56a79-b793-4700-8888-d14b7687bbc2)
+
+ ![localhost_53620_(iPad Pro) (2)](https://github.com/mpgxvii/radar-protocol-generator/assets/16977973/ca00f8f3-9096-49f1-9ef8-315bebfb9fde)
