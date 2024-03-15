@@ -1,11 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { Router } from '@angular/router';
-import { UntypedFormBuilder, Validators } from '@angular/forms';
-import { DateAdapter } from "@angular/material/core";
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { TranslateService } from "@ngx-translate/core";
-
-import {LANGUAGES} from "@app/app.module";
 
 @Component({
   selector: 'app-protocol-dialog',
@@ -19,11 +13,9 @@ export class ProtocolDialogComponent {
   isUpdateLoading = false;
   isDeleteLoading = false;
   error?: string;
-
   subject = this.data.subject;
 
-  messageForUserLink?: string;
-  messageForUserExpirationDate?: Date;
+  PROTOCOL_FILE_NAME = 'protocol.json';
 
   constructor(
     public dialogRef: MatDialogRef<ProtocolDialogComponent>,
@@ -34,5 +26,18 @@ export class ProtocolDialogComponent {
 
   close(): void {
     this.dialogRef.close()
+  }
+
+  downloadProtocol() {
+    const formattedJson = JSON.stringify(this.subject, null, 2) // Indent with 2 spaces
+    const blob = new Blob([formattedJson], { type: 'application/json' });   
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = this.PROTOCOL_FILE_NAME
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
   }
 }

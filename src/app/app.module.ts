@@ -8,6 +8,8 @@ import {IModuleTranslationOptions, ModuleTranslateLoader} from "@larscom/ngx-tra
 import { AppComponent } from '@app/app.component';
 import {AppRoutingModule} from '@app/app-routing.module';
 import {SharedModule} from "@app/shared/shared.module";
+import { GithubClient } from './services/github-client.service';
+import { UtilityService } from './services/utility.service';
 
 export const LANGUAGES = [
     {lang: 'en', locale: 'en-GB', label: 'English', dateFormat: 'dd/mm/yyyy'}, // default language
@@ -51,6 +53,8 @@ export function ModuleHttpLoaderFactory(http: HttpClient) {
       AppRoutingModule,
     ],
   providers: [
+    GithubClient,
+    UtilityService
   ],
   bootstrap: [AppComponent]
 })

@@ -1,8 +1,18 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {FormBuilder, FormGroup, UntypedFormBuilder, Validators} from '@angular/forms';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, FormGroup, NgForm, UntypedFormBuilder, Validators } from '@angular/forms';
 import { ProtocolDialogComponent } from '../protocol-dialog/protocol-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { defaultProtocol } from '../../../shared/data/protocol';
+import { GithubClient } from '../../../services/github-client.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import nlp from 'compromise';
+import { UtilityService } from '../../../services/utility.service';
+
+interface RepeatQuestionnaire {
+  unit: 'min' | 'hour' | 'day' | 'week' | 'month' | 'year';
+  unitsFromZero: number[];
+}
 
 @Component({
   selector: 'app-dashboard',
@@ -10,74 +20,20 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrls: ['./dashboard-page.component.scss']
 })
 export class DashboardPageComponent {
-  constructor(public dialog: MatDialog) {}
+  constructor(public dialog: MatDialog, private githubClient: GithubClient, public snackbar: MatSnackBar, private util: UtilityService) {
+    this.init()
+  }
 
   DEFAULT_REPOSITORY = 'https://raw.githubusercontent.com/RADAR-CNS/RADAR-REDCap-aRMT-Definitions/master/questionnaires/';
   DEFAULT_AVSC = 'questionnaire'
-  DEFAULT_PROTOCOL = {
-    name: 'PHQ8',
-    showIntroduction: false,
-    showInCalendar: true,
-    isDemo: false,
-    order: 4,
-    questionnaire: {
-      repository: this.DEFAULT_REPOSITORY,
-      name: '',
-      avsc: this.DEFAULT_AVSC
-    },
-    startText: {
-      en: '',
-      it: '',
-      nl: '',
-      da: '',
-      de: '',
-      es: ''
-    },
-    endText: {
-      en: '',
-      it: '',
-      nl: '',
-      da: '',
-      de: '',
-      es: ''
-    },
-    warn: {
-      en: '',
-      it: '',
-      nl: '',
-      da: '',
-      de: '',
-      es: ''
-    },
-    estimatedCompletionTime: 2,
-    protocol: {
-      repeatProtocol: {
-        unit: 'day',
-        amount: 28
-      },
-      repeatQuestionnaire: {
-        unit: 'min',
-        unitsFromZero: [480]
-      },
-      reminders: {
-        unit: 'hour',
-        amount: 24,
-        repeat: 2
-      },
-      completionWindow: {
-        unit: 'day',
-        amount: 4
-      },
-      notification: {
-        title: {
-          en: 'Questionnaire time'
-        },
-        text: {
-          en: 'Please finish them within 3 days.'
-        }
-      }
-    }
-  }
+  DEFAULT_PROTOCOL = defaultProtocol
+
+  GIT_QUESTIONNAIRE_PATH = 'contents/questionnaires'
+  GIT_API_URI = 'https://api.github.com/repos'
+  GIT_QUESTIONNAIRE_REPO = 'RADAR-base/RADAR-REDCap-aRMT-Definitions'
+  GIT_BRANCH = 'master'
+
+  questionnaires: any[] = []
   formData: any = {
     version: '0.0.1',
     schemaVersion: '0.0.1',
@@ -86,9 +42,16 @@ export class DashboardPageComponent {
     protocols: [this.DEFAULT_PROTOCOL]
   };
 
+  init() {
+    this.fetchQuestionnairesFromGithub().then((questionnaires: any[]) => {
+      this.questionnaires = questionnaires 
+    })
+  }
+
   addProtocol() {
     // Add a new protocol to the protocols array
-    this.formData.protocols.push(this.DEFAULT_PROTOCOL);
+    const newProtocol = this.util.deepCopy(this.DEFAULT_PROTOCOL)
+    this.formData.protocols.push(newProtocol);
   }
 
   removeProtocol(index: number) {
@@ -98,18 +61,60 @@ export class DashboardPageComponent {
     }
   }
 
-  onSubmit() {
+  onSubmit(form: NgForm) {
     // Handle form submission logic here
-    console.log(this.formData);
-    this.openDialog()
-  
+    if (form.valid) {
+      console.log(this.formData);
+      this.openDialog()
+    }
+    else {
+      console.log('Form is invalid')
+      this.showInvalidFormError()
+    }
+
   }
 
   openDialog(): void {
     this.dialog.open(ProtocolDialogComponent, {
-      data: {subject: this.formData}
+      data: { subject: this.formData }
     });
   }
+
+  showInvalidFormError(): void {
+    this.snackbar.open("Please complete the form correctly.", 'Close', {
+      duration: 3000, // Duration the snackbar should be displayed (in milliseconds)
+      verticalPosition: 'top', // Position of the snackbar
+    });
+  }
+
+  fetchQuestionnairesFromGithub() {
+    // Fetch questionnaires from GitHub
+    const url = [this.GIT_API_URI, this.GIT_QUESTIONNAIRE_REPO, this.GIT_QUESTIONNAIRE_PATH].join('/')
+    const lastPull = localStorage.getItem('questionnaireLastPull')
+    if (this.questionnairesExpired()) {
+      return this.githubClient.getRaw(url)
+      .then((response) => {
+        const questionnaires = response.map((directories: any) => directories.name)
+        localStorage.setItem('questionnaires', JSON.stringify(questionnaires))
+        localStorage.setItem('questionnaireLastPull', new Date().toISOString())
+        return questionnaires
+      })
+    } else {
+      const questionnaires = localStorage.getItem('questionnaires')
+      if (questionnaires) {
+        return Promise.resolve(JSON.parse(questionnaires))
+      }
+      else return Promise.resolve([])
+    }
+  }
+
+  questionnairesExpired() {
+    // Check if the questionnaires have expired
+    const ONE_DAY = 1000 * 60 * 60 * 24
+    const lastPull = localStorage.getItem('questionnaireLastPull')
+    return !lastPull || new Date(lastPull).getTime() < new Date().getTime() - ONE_DAY
+  }
+  
 }
 
 
