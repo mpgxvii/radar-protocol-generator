@@ -3,7 +3,7 @@ export const DEFAULT_AVSC = 'questionnaire'
 export const defaultProtocol = {
     name: 'PHQ8',
     showIntroduction: false,
-    showInCalendar: true,
+    showInCalendar: false,
     isDemo: false,
     order: 4,
     questionnaire: {

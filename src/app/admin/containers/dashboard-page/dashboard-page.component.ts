@@ -27,25 +27,23 @@ export class DashboardPageComponent {
   DEFAULT_REPOSITORY = 'https://raw.githubusercontent.com/RADAR-CNS/RADAR-REDCap-aRMT-Definitions/master/questionnaires/';
   DEFAULT_AVSC = 'questionnaire'
   DEFAULT_PROTOCOL = defaultProtocol
-
-  GIT_QUESTIONNAIRE_PATH = 'contents/questionnaires'
-  GIT_API_URI = 'https://api.github.com/repos'
-  GIT_QUESTIONNAIRE_REPO = 'RADAR-base/RADAR-REDCap-aRMT-Definitions'
-  GIT_BRANCH = 'master'
-
   questionnaires: any[] = []
   formData: any = {
     version: '0.0.1',
     schemaVersion: '0.0.1',
     name: 'RADAR ART CARMA KCL s1',
-    healthIssues: ['ADHD'],
-    protocols: [this.DEFAULT_PROTOCOL]
+    healthIssues: 'ADHD',
+    protocols: []
   };
 
+  unitsFromZero: any;
+
+
   init() {
-    this.fetchQuestionnairesFromGithub().then((questionnaires: any[]) => {
-      this.questionnaires = questionnaires 
+    this.githubClient.fetchQuestionnairesFromGithub().then((questionnaires: any[]) => {
+      this.questionnaires = questionnaires
     })
+    this.githubClient.fetchProjectsFromGithub()
   }
 
   addProtocol() {
@@ -64,14 +62,24 @@ export class DashboardPageComponent {
   onSubmit(form: NgForm) {
     // Handle form submission logic here
     if (form.valid) {
-      console.log(this.formData);
+      this.formData = this.validateForm(this.formData)
       this.openDialog()
     }
     else {
-      console.log('Form is invalid')
       this.showInvalidFormError()
     }
 
+  }
+
+  validateForm(form: any) {
+    const healthIssues = form['healthIssues']
+    form['healthIssues'] = Array.isArray(healthIssues) ? healthIssues : healthIssues.split(',').map((issue: string) => issue.trim())
+    form['protocols'].forEach((protocol: any) => {
+      protocol['protocol']['repeatQuestionnaire']['unitsFromZero'] = protocol['protocol']['repeatQuestionnaire']['unitsFromZero'].map((unit: any) =>
+        this.util.convertH2M(unit)
+      )
+    })
+    return form
   }
 
   openDialog(): void {
@@ -87,34 +95,18 @@ export class DashboardPageComponent {
     });
   }
 
-  fetchQuestionnairesFromGithub() {
-    // Fetch questionnaires from GitHub
-    const url = [this.GIT_API_URI, this.GIT_QUESTIONNAIRE_REPO, this.GIT_QUESTIONNAIRE_PATH].join('/')
-    const lastPull = localStorage.getItem('questionnaireLastPull')
-    if (this.questionnairesExpired()) {
-      return this.githubClient.getRaw(url)
-      .then((response) => {
-        const questionnaires = response.map((directories: any) => directories.name)
-        localStorage.setItem('questionnaires', JSON.stringify(questionnaires))
-        localStorage.setItem('questionnaireLastPull', new Date().toISOString())
-        return questionnaires
-      })
-    } else {
-      const questionnaires = localStorage.getItem('questionnaires')
-      if (questionnaires) {
-        return Promise.resolve(JSON.parse(questionnaires))
-      }
-      else return Promise.resolve([])
+  addUnitsFromZero(index: any) {
+    if (this.unitsFromZero) {
+      this.formData.protocols[index].protocol.repeatQuestionnaire.unitsFromZero.push(this.unitsFromZero);
+      this.formData.protocols[index].protocol.repeatQuestionnaire.unit = 'min'
+      this.unitsFromZero = 0; // Clear input after adding
     }
   }
 
-  questionnairesExpired() {
-    // Check if the questionnaires have expired
-    const ONE_DAY = 1000 * 60 * 60 * 24
-    const lastPull = localStorage.getItem('questionnaireLastPull')
-    return !lastPull || new Date(lastPull).getTime() < new Date().getTime() - ONE_DAY
+  removeUnitsFromZero(protocolIndex: number, index: number) {
+    this.formData.protocols[protocolIndex].protocol.repeatQuestionnaire.unitsFromZero.splice(index, 1);
   }
-  
+
 }
 
 
