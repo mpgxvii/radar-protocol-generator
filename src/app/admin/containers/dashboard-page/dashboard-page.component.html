@@ -3,7 +3,10 @@
     https://github.com/RADAR-base/RADAR-aRMT-protocols</span>
   <!-- <mat-card appearance="outlined"> -->
   <!-- <mat-card-content> -->
-  <br><br><br>
+  <br><br>
+  <button mat-raised-button color="primary" type="button" mat-raised-button (click)="fileInput.click()">Import Existing Protocol File</button>
+  <input hidden (change)="importProtocol($event)" #fileInput type="file" id="file">
+  <br><br>
   <form #qForm="ngForm" (ngSubmit)="onSubmit(qForm)">
     <div class="">
       <mat-form-field appearance="outline" floatLabel="always">
