@@ -107,6 +107,26 @@ export class DashboardPageComponent {
     this.formData.protocols[protocolIndex].protocol.repeatQuestionnaire.unitsFromZero.splice(index, 1);
   }
 
+  importProtocol(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.readAsText(file);
+      reader.onload = () => {
+        try {
+          const protocol = JSON.parse(reader.result as string);
+          this.formData = protocol;
+          this.formData['protocols'].forEach((protocol: any) => {
+            protocol['protocol']['repeatQuestionnaire']['unitsFromZero'] = protocol['protocol']['repeatQuestionnaire']['unitsFromZero'].map((unit: any) =>
+              this.util.convertM2H(unit)
+            )
+          })
+        } catch (error) {
+          console.error('Error parsing JSON file:', error);
+        }
+      };
+    }
+  }
 }
 
 
