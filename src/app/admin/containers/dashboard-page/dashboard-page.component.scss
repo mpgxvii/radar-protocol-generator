@@ -10,6 +10,10 @@ form {
   width: 300px;
 }
 
+mat-form-field.questionnaire {
+  min-width: 210px;
+  width: 20vw !important; /* Adjust the width as needed */
+}
 
 .protocol {
   margin: 40px;
