@@ -1,5 +1,7 @@
 # Protocol Generator
 
+[Try the app through our live demo.](https://mpgxvii.github.io/radar-protocol-generator/)
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.2.3.
 
 ## Development server
