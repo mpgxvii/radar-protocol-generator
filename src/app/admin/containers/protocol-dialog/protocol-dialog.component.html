@@ -18,7 +18,7 @@
   </app-message>
 
   <dl class="desc">
-    <dd>{{ subject | json }}</dd>
+    <pre>{{ subject | json }}</pre>
 
   </dl>
 
@@ -34,6 +34,15 @@
             (click)="close()"
     >
       Cancel
+    </button>
+  </div>
+  <div class="action-buttons-container__right">
+    <button mat-stroked-button
+            color="primary"
+            type="button"
+            (click)="downloadProtocol()"
+    >
+      Download JSON
     </button>
   </div>
 </mat-dialog-actions>
